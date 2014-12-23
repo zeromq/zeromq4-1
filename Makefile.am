@@ -523,6 +523,9 @@ test_xpub_nodrop_LDADD = libzmq.la
 tests_test_atomics_SOURCES = tests/test_atomics.cpp
 tests_test_atomics_LDADD = src/libzmq.la
 
+tests_test_atomics_SOURCES = tests/test_atomics.cpp
+tests_test_atomics_LDADD = src/libzmq.la
+
 if !ON_MINGW
 test_apps += \
 	test_shutdown_stress \
