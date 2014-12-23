@@ -341,7 +341,8 @@ test_apps = \
 	test_bind_src_address \
 	test_metadata \
 	test_capabilities \
-	test_xpub_nodrop
+	test_xpub_nodrop \
+	test_atomics
 
 test_system_SOURCES = tests/test_system.cpp
 test_system_LDADD = libzmq.la
@@ -518,6 +519,9 @@ test_capabilities_LDADD = libzmq.la
 
 test_xpub_nodrop_SOURCES = tests/test_xpub_nodrop.cpp
 test_xpub_nodrop_LDADD = libzmq.la
+
+tests_test_atomics_SOURCES = tests/test_atomics.cpp
+tests_test_atomics_LDADD = src/libzmq.la
 
 if !ON_MINGW
 test_apps += \
