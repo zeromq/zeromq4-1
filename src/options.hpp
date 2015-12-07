@@ -189,6 +189,12 @@ namespace zmq
         //  close socket.  Default is 30 secs.  0 means no handshake timeout.
         int handshake_ivl;
 
+#       if defined ZMQ_HAVE_VMCI
+        uint64_t vmci_buffer_size;
+        uint64_t vmci_buffer_min_size;
+        uint64_t vmci_buffer_max_size;
+        int vmci_connect_timeout;
+#       endif
     };
 }
 

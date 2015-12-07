@@ -66,7 +66,11 @@ zmq::options_t::options_t () :
     gss_plaintext (false),
     socket_id (0),
     conflate (false),
-    handshake_ivl (30000)
+    handshake_ivl (30000),
+    vmci_buffer_size (0),
+    vmci_buffer_min_size (0),
+    vmci_buffer_max_size (0),
+    vmci_connect_timeout (-1)
 {
 }
 
@@ -502,6 +506,36 @@ int zmq::options_t::setsockopt (int option_, const void *optval_,
                 return 0;
             }
             break;
+
+#       ifdef ZMQ_HAVE_VMCI
+        case ZMQ_VMCI_BUFFER_SIZE:
+            if (optvallen_ == sizeof (uint64_t)) {
+                vmci_buffer_size = *((uint64_t*) optval_);
+                return 0;
+            }
+            break;
+
+        case ZMQ_VMCI_BUFFER_MIN_SIZE:
+            if (optvallen_ == sizeof (uint64_t)) {
+                vmci_buffer_min_size = *((uint64_t*) optval_);
+                return 0;
+            }
+            break;
+
+        case ZMQ_VMCI_BUFFER_MAX_SIZE:
+            if (optvallen_ == sizeof (uint64_t)) {
+                vmci_buffer_max_size = *((uint64_t*) optval_);
+                return 0;
+            }
+            break;
+
+        case ZMQ_VMCI_CONNECT_TIMEOUT:
+            if (optvallen_ == sizeof (int)) {
+                vmci_connect_timeout = *((int*) optval_);
+                return 0;
+            }
+            break;
+#       endif
 
         default:
 #if defined (ZMQ_ACT_MILITANT)
