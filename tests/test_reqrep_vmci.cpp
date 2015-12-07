@@ -27,49 +27,42 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __ZMQ_ADDRESS_HPP_INCLUDED__
-#define __ZMQ_ADDRESS_HPP_INCLUDED__
-
 #include <string>
+#include <sstream>
+#include <vmci_sockets.h>
 
-namespace zmq
+#include "testutil.hpp"
+
+int main (void)
 {
-    class ctx_t;
-    class tcp_address_t;
-#if !defined ZMQ_HAVE_WINDOWS && !defined ZMQ_HAVE_OPENVMS
-    class ipc_address_t;
-#endif
-#if defined ZMQ_HAVE_LINUX
-    class tipc_address_t;
-#endif
-#if defined ZMQ_HAVE_VMCI
-    class vmci_address_t;
-#endif
-    struct address_t {
-        address_t (const std::string &protocol_, const std::string &address_, ctx_t *parent_);
+    setup_test_environment();
+    void *ctx = zmq_ctx_new ();
+    assert (ctx);
 
-        ~address_t ();
+    std::stringstream s;
+    s << "vmci://" << VMCISock_GetLocalCID() << ":" << 5560;
+    std::string endpoint = s.str();
 
-        const std::string protocol;
-        const std::string address;
-        ctx_t *parent;
+    void *sb = zmq_socket (ctx, ZMQ_REP);
+    assert (sb);
+    int rc = zmq_bind (sb, endpoint.c_str());
+    assert (rc == 0);
 
-        //  Protocol specific resolved address
-        union {
-            tcp_address_t *tcp_addr;
-#if !defined ZMQ_HAVE_WINDOWS && !defined ZMQ_HAVE_OPENVMS
-            ipc_address_t *ipc_addr;
-#endif
-#if defined ZMQ_HAVE_LINUX
-            tipc_address_t *tipc_addr;
-#endif
-#if defined ZMQ_HAVE_VMCI
-            vmci_address_t *vmci_addr;
-#endif
-        } resolved;
+    void *sc = zmq_socket (ctx, ZMQ_REQ);
+    assert (sc);
+    rc = zmq_connect (sc, endpoint.c_str());
+    assert (rc == 0);
 
-        int to_string (std::string &addr_) const;
-    };
+    bounce (sb, sc);
+
+    rc = zmq_close (sc);
+    assert (rc == 0);
+
+    rc = zmq_close (sb);
+    assert (rc == 0);
+
+    rc = zmq_ctx_term (ctx);
+    assert (rc == 0);
+
+    return 0;
 }
-
-#endif

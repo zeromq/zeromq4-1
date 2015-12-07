@@ -27,49 +27,46 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __ZMQ_ADDRESS_HPP_INCLUDED__
-#define __ZMQ_ADDRESS_HPP_INCLUDED__
+#ifndef __ZMQ_VMCI_ADDRESS_HPP_INCLUDED__
+#define __ZMQ_VMCI_ADDRESS_HPP_INCLUDED__
 
 #include <string>
 
+#include "platform.hpp"
+#include "ctx.hpp"
+
+#if defined(ZMQ_HAVE_VMCI)
+#include <vmci_sockets.h>
+
 namespace zmq
 {
-    class ctx_t;
-    class tcp_address_t;
-#if !defined ZMQ_HAVE_WINDOWS && !defined ZMQ_HAVE_OPENVMS
-    class ipc_address_t;
-#endif
-#if defined ZMQ_HAVE_LINUX
-    class tipc_address_t;
-#endif
-#if defined ZMQ_HAVE_VMCI
-    class vmci_address_t;
-#endif
-    struct address_t {
-        address_t (const std::string &protocol_, const std::string &address_, ctx_t *parent_);
+//    class ctx_t;
+    class vmci_address_t
+    {
+    public:
+        vmci_address_t (ctx_t *parent_);
+        vmci_address_t (const sockaddr *sa, socklen_t sa_len, ctx_t *parent_);
+        ~vmci_address_t ();
 
-        ~address_t ();
+        //  This function sets up the address for VMCI transport.
+        int resolve (const char *path_);
 
-        const std::string protocol;
-        const std::string address;
+        //  The opposite to resolve()
+        int to_string (std::string &addr_);
+
+        const sockaddr *addr () const;
+        socklen_t addrlen () const;
+
+    private:
+        struct sockaddr_vm address;
         ctx_t *parent;
 
-        //  Protocol specific resolved address
-        union {
-            tcp_address_t *tcp_addr;
-#if !defined ZMQ_HAVE_WINDOWS && !defined ZMQ_HAVE_OPENVMS
-            ipc_address_t *ipc_addr;
-#endif
-#if defined ZMQ_HAVE_LINUX
-            tipc_address_t *tipc_addr;
-#endif
-#if defined ZMQ_HAVE_VMCI
-            vmci_address_t *vmci_addr;
-#endif
-        } resolved;
-
-        int to_string (std::string &addr_) const;
+        vmci_address_t ();
+        vmci_address_t (const vmci_address_t&);
+        const vmci_address_t &operator = (const vmci_address_t&);
     };
 }
+
+#endif
 
 #endif

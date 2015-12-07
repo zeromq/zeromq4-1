@@ -27,49 +27,35 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __ZMQ_ADDRESS_HPP_INCLUDED__
-#define __ZMQ_ADDRESS_HPP_INCLUDED__
+#ifndef __ZMQ_VMCI_HPP_INCLUDED__
+#define __ZMQ_VMCI_HPP_INCLUDED__
 
+#include <stdint.h>
 #include <string>
+
+#include "platform.hpp"
+#include "fd.hpp"
+#include "ctx.hpp"
+
+#if defined ZMQ_HAVE_VMCI
+
+#if defined ZMQ_HAVE_WINDOWS
+#include "windows.hpp"
+#else
+#include <sys/time.h>
+#endif
 
 namespace zmq
 {
-    class ctx_t;
-    class tcp_address_t;
-#if !defined ZMQ_HAVE_WINDOWS && !defined ZMQ_HAVE_OPENVMS
-    class ipc_address_t;
-#endif
-#if defined ZMQ_HAVE_LINUX
-    class tipc_address_t;
-#endif
-#if defined ZMQ_HAVE_VMCI
-    class vmci_address_t;
-#endif
-    struct address_t {
-        address_t (const std::string &protocol_, const std::string &address_, ctx_t *parent_);
+    void tune_vmci_buffer_size (ctx_t *context_, fd_t sockfd_, uint64_t default_size_, uint64_t min_size_, uint64_t max_size_);
 
-        ~address_t ();
-
-        const std::string protocol;
-        const std::string address;
-        ctx_t *parent;
-
-        //  Protocol specific resolved address
-        union {
-            tcp_address_t *tcp_addr;
-#if !defined ZMQ_HAVE_WINDOWS && !defined ZMQ_HAVE_OPENVMS
-            ipc_address_t *ipc_addr;
+#if defined ZMQ_HAVE_WINDOWS
+    void tune_vmci_connect_timeout (ctx_t *context_, fd_t sockfd_, DWORD timeout_);
+#else
+    void tune_vmci_connect_timeout (ctx_t *context_, fd_t sockfd_, struct timeval timeout_);
 #endif
-#if defined ZMQ_HAVE_LINUX
-            tipc_address_t *tipc_addr;
-#endif
-#if defined ZMQ_HAVE_VMCI
-            vmci_address_t *vmci_addr;
-#endif
-        } resolved;
-
-        int to_string (std::string &addr_) const;
-    };
 }
+
+#endif
 
 #endif

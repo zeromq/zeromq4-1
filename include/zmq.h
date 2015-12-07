@@ -294,6 +294,10 @@ ZMQ_EXPORT const char *zmq_msg_gets (zmq_msg_t *msg, const char *property);
 #define ZMQ_HANDSHAKE_IVL 66
 #define ZMQ_SOCKS_PROXY 68
 #define ZMQ_XPUB_NODROP 69
+#define ZMQ_VMCI_BUFFER_SIZE 70
+#define ZMQ_VMCI_BUFFER_MIN_SIZE 71
+#define ZMQ_VMCI_BUFFER_MAX_SIZE 72
+#define ZMQ_VMCI_CONNECT_TIMEOUT 73
 
 /*  Message options                                                           */
 #define ZMQ_MORE 1
