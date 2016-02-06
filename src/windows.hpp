@@ -51,7 +51,7 @@
 #include <winsock2.h>
 #include <windows.h>
 #include <mswsock.h>
-#include <lphlpapi.h>
+#include <iphlpapi.h>
 
 #if !defined __MINGW32__
 #include <Mstcpip.h>
