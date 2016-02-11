@@ -39,13 +39,13 @@
 
 //  Set target version to Windows Vista or higher, required by if_nametoindex
 #ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0600
+#define _WIN32_WINNT 0x0501
 #endif
 
-#if(_WIN32_WINNT >= 0x0600)
+#if(_WIN32_WINNT >= 0x0501)
 #else
 #undef _WIN32_WINNT
-#define _WIN32_WINNT 0x0600
+#define _WIN32_WINNT 0x0501
 #endif
 
 #include <winsock2.h>
