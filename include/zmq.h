@@ -87,7 +87,16 @@ extern "C" {
 #else
 #   include <stdint.h>
 #endif
-
+// Windows MSVS doesn't have stdbool
+#if (defined (_MSC_VER))
+#   if (!defined (__cplusplus) && (!defined (true)))
+#       define true 1
+#       define false 0
+        typedef char bool;
+#   endif
+#else
+#   include <stdbool.h>
+#endif
 
 /******************************************************************************/
 /*  0MQ errors.                                                               */
