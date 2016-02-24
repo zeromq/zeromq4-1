@@ -87,9 +87,7 @@ extern "C" {
 #else
 #   include <stdint.h>
 #endif
-#if defined HAVE_STDBOOL_H
-#   include <stdbool.h>
-#endif
+
 
 /******************************************************************************/
 /*  0MQ errors.                                                               */
