@@ -87,7 +87,16 @@ extern "C" {
 #else
 #   include <stdint.h>
 #endif
-
+// Windows MSVS doesn't have stdbool
+#if (defined (_MSC_VER))
+#   if (!defined (__cplusplus) && (!defined (true)))
+#       define true 1
+#       define false 0
+        typedef char bool;
+#   endif
+#else
+#   include <stdbool.h>
+#endif
 
 /******************************************************************************/
 /*  0MQ errors.                                                               */
@@ -444,6 +453,17 @@ ZMQ_EXPORT uint8_t *zmq_z85_decode (uint8_t *dest, const char *string);
 /*  Generate z85-encoded public and private keypair with libsodium.           */
 /*  Returns 0 on success.                                                     */
 ZMQ_EXPORT int zmq_curve_keypair (char *z85_public_key, char *z85_secret_key);
+
+/******************************************************************************/
+/*  Atomic utility methods                                                    */
+/******************************************************************************/
+
+ZMQ_EXPORT void *zmq_atomic_counter_new (void);
+ZMQ_EXPORT void zmq_atomic_counter_set (void *counter, int value);
+ZMQ_EXPORT int zmq_atomic_counter_inc (void *counter);
+ZMQ_EXPORT bool zmq_atomic_counter_dec (void *counter);
+ZMQ_EXPORT int zmq_atomic_counter_value (void *counter);
+ZMQ_EXPORT void zmq_atomic_counter_destroy (void **counter_p);
 
 
 /******************************************************************************/
